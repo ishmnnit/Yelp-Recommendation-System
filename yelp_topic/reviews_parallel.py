@@ -21,36 +21,42 @@ def worker(identifier, skip, count):
     tags_collection = MongoClient(Settings.MONGO_CONNECTION_STRING)[Settings.TAGS_DATABASE][
         Settings.REVIEWS_COLLECTION]
 
-    reviews_cursor= reviews_collection.find()
     # Tags creation and storage is insert heavey operation , so Adding data in Bulk
     print tags_collection
     bulk = tags_collection.initialize_unordered_bulk_op();
     bulkCounter = 0
     counter = 0
-    for review in reviews_cursor:
-        words = []
-        sentences = nltk.sent_tokenize(review["text"].lower())
-        for sentence in sentences:
-            tokens = nltk.word_tokenize(sentence)
-            text = [word for word in tokens if word not in stopwords]
-            tagged_text = nltk.pos_tag(text)
-            for word, tag in tagged_text:
-                words.append({"word": word, "pos": tag})
-                bulk.insert({
-                    "rating" : review ["rating"],
-                    "userId" : review ["userId"],
-                    "reviewId": review["reviewId"],
-                    "business": review["business"],
-                    "text": review["text"],
-                    "words": words
-                    })
-                bulkCounter=bulkCounter + 1
-                counter = counter + 1
-                if bulkCounter % 10000 == 0 :
-                    bulk.execute()
-                    print str(counter) + 'Entries are inserted in Thread' + str(multiprocessing.current_process())
-                    bulkCounter=0
-                    bulk= tags_collection.initialize_unordered_bulk_op()
+    batch_size = 1000
+    
+    for batch in range(0, count, batch_size):
+        reviews_cursor = reviews_collection.find().skip(skip + batch).limit(batch_size)
+        for review in reviews_cursor:
+            words = []
+            sentences = nltk.sent_tokenize(review["text"].lower())
+            for sentence in sentences:
+                tokens = nltk.word_tokenize(sentence)
+                text = [word for word in tokens if word not in stopwords]
+                tagged_text = nltk.pos_tag(text)
+                
+                for word, tag in tagged_text:
+                    words.append({"word": word, "pos": tag})
+                    
+            bulk.insert({
+                        "rating" : review ["rating"],
+                        "userId" : review ["userId"],
+                        "reviewId": review["reviewId"],
+                        "business": review["business"],
+                        "text": review["text"],
+                        "words": words
+                        })
+            bulkCounter=bulkCounter + 1
+            counter = counter + 1
+            if bulkCounter % 10000 == 0 :
+                bulk.execute()
+                print str(counter) + 'Entries are inserted in Thread' + str(multiprocessing.current_process())
+                bulkCounter=0
+                bulk= tags_collection.initialize_unordered_bulk_op()
+                    
     if bulkCounter > 0 :
         bulk.execute()
 
@@ -59,7 +65,7 @@ def main():
         Settings.REVIEWS_COLLECTION]
     reviews_cursor = reviews_collection.find()
     count = reviews_cursor.count()
-    workers = 6
+    workers = 4
     batch = count / workers
 
     jobs = []

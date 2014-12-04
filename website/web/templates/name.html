@@ -1,0 +1,49 @@
+{% load staticfiles %}
+<script>
+ function myOnSubmit(myForm)
+ {
+   myForm.action =  "/reco/" + myForm.username.value;
+   return true
+ }
+ </script>
+
+ <!DOCTYPE html>>
+ <html lang="en">
+ <head>
+ <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+ <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+ <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+ <meta charset="utf-8">
+ <title>Recommendation System</title>
+ <link href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.css" rel="stylesheet">
+ <style>.content {padding-top: 80px;}</style>
+ </head>
+ 
+  <body>
+  <div class="topbar">
+  <div class="fill">
+  <div class="container">
+  <h2>
+  <a href="/" class="brand">Product Recommendation System </a> 
+  <br></br>
+  <small> Recommendation Engine using LDA</small>
+  </h2>
+ </div>
+  </div>
+  </div>
+
+
+
+<br><br><br><br><br>
+
+
+<div class="abc">
+<form onSubmit="return myOnSubmit(this)" action="/reco/" method="post">
+      {% csrf_token %} 
+       <p size = "70"> Input User Id</p>   
+      <input id="username" type="text" name="username" size="65" value="{{ current_name }}">
+      <input type="submit" value="OK">
+</form>
+</div>
+</body>

@@ -43,6 +43,10 @@
       {% csrf_token %} 
        <p size = "70"> Input User Id</p>   
       <input id="username" type="text" name="username" size="65" value="{{ current_name }}">
+      <select name="algorithm">
+        <option value="lda">Our Model Using LDA</option>
+        <option value="graph">Graphlab recommendation</option>
+      </select>
       <input type="submit" value="OK">
 </form>
 </div>

@@ -1,0 +1,55 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+ <link rel="stylesheet" href="{% static 'css/style.css' %}">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<meta charset="utf-8">
+<title>My Tumblelog</title>
+<link href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.css" rel="stylesheet">
+<style>.content {padding-top: 80px;}</style>
+</head>
+
+ <body>
+ <div class="splash">
+ <div class="topbar">
+ <div class="fill">
+ <div class="container">
+ <h2>
+ <a href="/" class="brand">Product Recommendation System </a> 
+ <br></br>
+ <small> Recommendation Engine using LDA</small>
+ </h2>
+</div>
+ </div>
+ </div>
+
+ <br><br>
+ <table>
+     <thead>
+         <tr>
+             <th>User ID</th>
+             <th>Business Score</th>
+             <th>Business ID</th>
+             <th>Business Name </th>
+             <th>Business Categories</th>
+        </tr>
+    </thead>
+     <tbody>
+       {% for r in reco %}
+       <tr>
+       {% for s,t in r.items %}
+        <th>{{t}}</th>
+        {% endfor %}
+       </tr>
+       {% endfor %}
+
+     </tbody>
+</table>
+
+ {% block js_footer %}{% endblock %}
+ </div>
+ </body>
+</html>

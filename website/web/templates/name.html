@@ -42,7 +42,8 @@
 <form onSubmit="return myOnSubmit(this)" action="/reco/" method="post">
       {% csrf_token %} 
        <p size = "70"> Input User Id</p>   
-      <input id="username" type="text" name="username" size="65" value="{{ current_name }}">
+      <input id="username" type="text" name="username" size="50" value="{{ current_name }}">
+      <br> </br>
       <select name="algorithm">
         <option value="lda">Our Model Using LDA</option>
         <option value="graph">Graphlab recommendation</option>
